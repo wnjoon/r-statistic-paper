@@ -5,11 +5,11 @@ library(lubridate)
 library(stringr)
 
 # 📌 설정값
-target_industry <- ""     # 예: "제조업", 없으면 "" 또는 NULL
-target_size <- NULL       # 1~5 (없으면 NULL)
-region_filter <- ""       # "광역시", "비광역시", 없으면 "" 또는 NULL
+target_industry <- ""      # 예: "제조업", 없으면 "" 또는 NULL
+target_size <- NULL                 # 예: 1~5, 없으면 NULL
+region_filter <- ""        # 예: "광역시", "비광역시", 없으면 "" 또는 NULL
 
-# 근로자수 범위 매핑
+# 👥 근로자수 범위 매핑
 size_ranges <- list(
   `1` = c(0, 5),
   `2` = c(5, 50),
@@ -36,10 +36,9 @@ gam_df <- lapply(file_list, function(file) {
 }) %>% bind_rows()
 
 # 🔎 연도 필터링: 2019~2024년
-gam_df <- gam_df %>%
-  filter(연도 >= 2019 & 연도 <= 2024)
+gam_df <- gam_df %>% filter(연도 >= 2019 & 연도 <= 2024)
 
-# 🎯 사용자 조건 필터링
+# 🎯 필터링 조건 적용
 if (!is.null(target_industry) && target_industry != "") {
   gam_df <- gam_df %>% filter(업종 == target_industry)
 }
@@ -60,6 +59,24 @@ if (!is.null(region_filter) && region_filter != "") {
   }
 }
 
+# 🧾 타이틀 생성
+industry_label <- ifelse(is.null(target_industry) || target_industry == "", "전체 업종", target_industry)
+
+size_label <- ifelse(is.null(target_size), "", switch(
+  as.character(target_size),
+  "1" = "5인 미만",
+  "2" = "5인 이상 50인 미만",
+  "3" = "50인 이상 300인 미만",
+  "4" = "300인 이상 1000인 미만",
+  "5" = "1000인 이상",
+  ""
+))
+
+region_label <- ifelse(region_filter == "", "", region_filter)
+
+title_parts <- c(industry_label, size_label, region_label)
+title_text <- paste(title_parts[title_parts != ""], collapse = ", ")
+
 # 📅 x축 연도 라벨 설정
 year_breaks <- seq(as.Date("2019-01-01"), as.Date("2024-12-31"), by = "1 year")
 
@@ -72,12 +89,7 @@ ggplot(gam_df, aes(x = 측정일자, y = 측정값)) +
            label = "2022년 중대재해처벌법 시행", color = "red", hjust = 0, size = 4) +
   scale_x_date(breaks = year_breaks, date_labels = "%Y") +
   labs(
-    title = paste0(
-      "GAM 시계열 추세 (",
-      ifelse(target_industry == "", "전체 업종", target_industry),
-      ifelse(!is.null(target_size), paste0(", 규모 ", target_size, "번"), ""),
-      ifelse(region_filter == "", "", paste0(", ", region_filter))
-    ),
+    title = paste0("GAM 시계열 추세 (", title_text, ")"),
     subtitle = "2019 ~ 2024년 측정값 기준 | 중대재해처벌법 시행 강조",
     x = "측정일자",
     y = "측정값"

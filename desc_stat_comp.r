@@ -8,9 +8,9 @@ output_dir <- "/Users/wonjoon/Workspace/kyuyoung/ongoing/result/desc_stat"
 file_list <- list.files(result_dir, pattern = "_rawdata_.*\\.xlsx$", full.names = TRUE)
 
 # 필터 조건
-target_industry <- ""     # 예: "제조업", 없으면 "" 또는 NULL
-target_size <- NULL       # 예: 1~5 (없으면 NULL)
-region_filter <- ""       # 예: "광역시" 또는 "비광역시", 없으면 "" 또는 NULL
+target_industry <- "협회 및 단체, 수리 및 기타 개인 서비스업"     # 예: "제조업", 없으면 "" 또는 NULL
+target_size <- 2       # 예: 1~5 (없으면 NULL)
+region_filter <- "비광역시"       # 예: "광역시" 또는 "비광역시", 없으면 "" 또는 NULL
 
 # 근로자수 범위 매핑
 size_ranges <- list(

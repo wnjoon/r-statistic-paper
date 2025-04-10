@@ -11,8 +11,8 @@ file_list <- list.files(result_dir, pattern = "_rawdata_.*\\.xlsx$", full.names 
 
 # 📌 필터 조건
 target_industry <- ""     # 예: "제조업", 없으면 "" 또는 NULL
-target_size <- NULL       # 예: 1~5 (없으면 NULL)
-region_filter <- ""       # 예: "광역시", "비광역시", 없으면 "" 또는 NULL
+target_size <- NULL      # 예: 1~5 (없으면 NULL)
+region_filter <- "비광역시"       # 예: "광역시", "비광역시", 없으면 "" 또는 NULL
 
 # 📊 근로자수 범위 매핑
 size_ranges <- list(
